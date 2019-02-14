@@ -1,6 +1,6 @@
 # coding-inverviews CLI
 
-My goal is to implement a CLI tool like [leetcode-cli](https://github.com/skygragon/leetcode-cli). And my teammate(@[曾德勤
+My goal is to implement a CLI tool like [leetcode-cli](https://github.com/skygragon/leetcode-cli). And my teammate([@曾德勤
 ](https://github.com/Zendq1998)) will wrap it to a 
 Virsual Studio Code extension like [this](https://github.com/jdneo/vscode-leetcode).
 

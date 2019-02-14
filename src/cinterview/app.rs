@@ -14,11 +14,13 @@ Options:
 
 #[derive(Debug, Deserialize)]
 pub struct CinterviewOptions {
+    pub arg_num: Vec<u32>,
     pub flag_exam: bool,
     pub flag_test: bool,
-    pub arg_num: Vec<u32>,
     pub flag_help: bool,
     pub flag_version: bool,
+    pub cmd_list: bool,
+    pub cmd_submit: bool
 }
 
 pub fn parse_args() -> CinterviewOptions {

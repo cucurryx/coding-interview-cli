@@ -9,5 +9,14 @@ use crate::cinterview::app::*;
 
 fn main() {
     let options = parse_args();
-    println!("{:?}", options);
+    
+    // list problems status
+    if options.cmd_list {
+        
+    }
+    
+    // submit a solution
+    if options.cmd_submit {
+
+    }
 }
