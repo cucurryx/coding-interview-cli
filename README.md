@@ -1,6 +1,10 @@
-## coding-inverviews CLI
+# coding-inverviews CLI
 
-### install
+My goal is to implement a CLI tool like [leetcode-cli](https://github.com/skygragon/leetcode-cli). And my teammate(@[曾德勤
+](https://github.com/Zendq1998)) will wrap it to a 
+Virsual Studio Code extension like [this](https://github.com/jdneo/vscode-leetcode).
+
+## install
 
 clone this repo:
 ```
@@ -18,9 +22,9 @@ run:
 cargo run
 ```
 
-### cmds
+## commands
 
-#### login or not login
+### login or not login
 There are two mode: login or not login. If you login, the submit history will be based on the remote history of you acount. And if not, it's based on your local log.
 
 The default mode is not login.
@@ -32,13 +36,13 @@ cinterview login
 # then input username
 # and input password
 ```
-#### list
+### list
 get current problems status
 ```
 cinterview list
 ```
 
-#### submit
+### submit
 
 ```
 # -e means exams mode
