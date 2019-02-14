@@ -7,17 +7,17 @@ pub type ProblemList = Vec<Problem>;
 pub struct Problem {
 
     /// The number of problem. Start from 0 to 65 for now. 
-    num: u32,
+    pub num: u32,
 
     /// The name of problem
-    name: String,
+    pub name: String,
 
     /// The content of problem
-    content: String,
+    pub content: String,
 
     /// Whether have pass this problem. If use choose login mode, it's based on the remote status.
     /// Otherwise, it's loaded from local log.
-    passed: bool
+    pub passed: bool
 }
 
 

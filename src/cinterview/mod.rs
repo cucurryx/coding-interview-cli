@@ -3,3 +3,4 @@ pub mod crawler;
 pub mod submit;
 pub mod problem;
 pub mod config;
+pub mod error;
