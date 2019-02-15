@@ -4,6 +4,7 @@ use docopt::Docopt;
 const USAGE: &'static str = "
 Usage: cinterview init
        cinterview list
+       cinterview clean
        cinterview submit [--exam | --test] <num>...
        
 Options:
@@ -22,7 +23,8 @@ pub struct CinterviewOptions {
     pub flag_version: bool,
     pub cmd_list: bool,
     pub cmd_submit: bool,
-    pub cmd_init: bool
+    pub cmd_init: bool,
+    pub cmd_clean: bool,
 }
 
 pub fn parse_args() -> CinterviewOptions {

@@ -11,6 +11,10 @@ use crate::cinterview::problem::*;
 fn main() {
     let options = parse_args();
 
+    if options.cmd_clean {
+        clean_problems();
+    }
+
     // init cinterview, download problems
     if options.cmd_init {
         init_problems();
