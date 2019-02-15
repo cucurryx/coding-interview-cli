@@ -5,8 +5,9 @@ use std::io::{stdin, Write};
 use std::env::current_dir;
 
 use std::fs;
-use std::fs::{File};
 use std::path::PathBuf;
+
+use std::collections::{HashMap};
 
 extern crate dirs;
 use dirs::home_dir;
@@ -30,6 +31,9 @@ pub struct Problem {
     /// The content of problem
     pub content: String,
 
+    /// The map of language name to it's coding template
+    pub templates: HashMap<String, String>,
+
     /// Whether have pass this problem. If use choose login mode, it's based on the remote status.
     /// Otherwise, it's loaded from local log.
     pub passed: bool,
@@ -38,13 +42,14 @@ pub struct Problem {
 impl Problem {
     fn save(&self, path: &PathBuf) -> GenResult<()> {
         // save detail
+
         Ok(())
     }
 
 }
 
 /// TODO, support login
-pub fn list_problems_login() {}
+// pub fn list_problems_login() {}
 
 pub fn list_problems_unlogin() {
     let local_root = home_dir().unwrap().join(".coding-interview");
