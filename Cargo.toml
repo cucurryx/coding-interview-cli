@@ -5,10 +5,13 @@ authors = ["mutexlock <xiebei1108@outlook.com>"]
 edition = "2018"
 
 [dependencies]
-docopt = "1"
+dirs = "1.0.4"
+docopt = "1.0.2"
 serde = "1.0"
 serde_derive = "1.0"
+serde_json = "1.0.38"                      # A JSON serialization file format
 indicatif = "0.11"
 reqwest = "0.9.9"                # higher level HTTP client library
 scraper = "0.9.1"                  # HTML parsing and querying with CSS selectors
-select = "0.4.2"                            # A library to extract useful data from HTML documents, suitable for web scraping.
+select = "0.4.2"   
+termion = "1.5.1"

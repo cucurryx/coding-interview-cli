@@ -1,26 +1,26 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
+extern crate serde_json;
 
 mod cinterview;
 
 use crate::cinterview::app::*;
-use crate::cinterview::crawler::*;
+use crate::cinterview::problem::*;
 
 fn main() {
     let options = parse_args();
-    
-    let problems = get_problem_details();
-    println!("{:?}", problems);
+
+    // init cinterview, download problems
+    if options.cmd_init {
+        init_problems();
+    }
 
     // list problems status
     if options.cmd_list {
-
+        list_problems_unlogin();
     }
-    
+
     // submit a solution
-    if options.cmd_submit {
-
-    }
+    if options.cmd_submit {}
 }
-
