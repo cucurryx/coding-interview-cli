@@ -1,6 +1,7 @@
 extern crate select;
 
 use std;
+use std::collections::HashMap;
 
 use select::document::Document;
 use select::predicate::{And, Class, Name};
@@ -10,6 +11,20 @@ use crate::cinterview::problem::{Problem, ProblemList};
 use crate::cinterview::utils::get_progress_bar;
 
 const PROBLEM_PAGE_CNT: u32 = 4;
+
+/// Static hash map that contains the suffix of each programming languages
+lazy_static! {
+    static ref PRIVILEGES: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        map.insert("javaTpl", "java");
+        map.insert("cTpl", "cc");
+        map.insert("pythonTpl", "py");
+        map.insert("cSharpTpl", "cs");
+        map.insert("jsTpl", "js");
+        map.insert("phpTpl", "php");
+        map
+    };
+}
 
 /// Get all urls of problems. In this layer, error will be throwed rather than being exposed.
 fn get_problem_urls() -> GenResult<Vec<String>> {
@@ -45,7 +60,6 @@ pub fn get_problems() -> ProblemList {
     for (i, url) in urls.iter().enumerate() {
         let query_url = format!("https://www.nowcoder.com/{}", url);
         let resp = reqwest::get(query_url.as_str()).expect("reqwest::get() fail 😔😔😔");
-
         let document = Document::from_read(resp).expect("Document::from_read() fail 😔😔😔");
 
         let titles = document
@@ -58,15 +72,31 @@ pub fn get_problems() -> ProblemList {
             .map(|x| x.text().trim().to_string())
             .collect::<Vec<String>>();
 
-        result.push(Problem {
+        let templates = document
+            .find(Name("textarea"))
+            .map(|x| {
+                (
+                    to_suffix(x.attr("id").expect("get id fail")),
+                    x.text().to_string(),
+                )
+            })
+            .into_iter()
+            .collect::<HashMap<String, String>>();
+
+        result.push(Problem{
             num: i as u32,
             name: titles.first().expect("get title fail").clone(),
             content: contents.first().expect("get contents fail").clone(),
             passed: false,
+            templates: templates,
         });
 
         progress_bar.set_position(i as u64);
     }
     progress_bar.finish_with_message("download finish!");
     result
+}
+
+fn to_suffix(key: &str) -> String {
+    PRIVILEGES.get(key).unwrap_or(&"unknown").to_string()
 }

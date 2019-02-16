@@ -15,3 +15,4 @@ reqwest = "0.9.9"                # higher level HTTP client library
 scraper = "0.9.1"                  # HTML parsing and querying with CSS selectors
 select = "0.4.2"   
 termion = "1.5.1"
+lazy_static = "1.2.0"            # A macro for declaring lazily evaluated statics in Rust.

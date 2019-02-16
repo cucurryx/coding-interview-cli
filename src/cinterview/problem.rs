@@ -7,7 +7,7 @@ use std::env::current_dir;
 use std::fs;
 use std::path::PathBuf;
 
-use std::collections::{HashMap};
+use std::collections::HashMap;
 
 extern crate dirs;
 use dirs::home_dir;
@@ -32,6 +32,7 @@ pub struct Problem {
     pub content: String,
 
     /// The map of language name to it's coding template
+    /// include: cpp, java, python, js, csharp, php
     pub templates: HashMap<String, String>,
 
     /// Whether have pass this problem. If use choose login mode, it's based on the remote status.
@@ -41,11 +42,14 @@ pub struct Problem {
 
 impl Problem {
     fn save(&self, path: &PathBuf) -> GenResult<()> {
-        // save detail
-
+        ensure_dir(path)?;
+        for (lang, code) in &self.templates {
+           let filename = format!("{}_{}.{}", self.num, self.name, lang);
+           let mut file = ensure_open(&path.join(filename))?;
+           file.write_all(code.as_bytes())?;
+        }
         Ok(())
     }
-
 }
 
 /// TODO, support login
@@ -84,8 +88,8 @@ pub fn init_problems() {
 
 fn init_projects() -> GenResult<()> {
     let local_root = home_dir().unwrap().join(".coding-interview/problem.json");
-    let root = current_dir()?
-        .join("coding-inverview/");
+    let root = current_dir()?.join("coding-inverview/");
+
     if root.exists() {
         println!("already exist!");
         return Ok(());
@@ -93,7 +97,7 @@ fn init_projects() -> GenResult<()> {
 
     for x in read_local_problems(&local_root)? {
         let dir_name = format!("{}_{}", x.num, x.name);
-        x.save(&root.join(dir_name))?
+        x.save(&root.join(dir_name))?;
     }
     Ok(())
 }
@@ -119,15 +123,14 @@ fn print_problem_infos(problems: ProblemList) {
     for x in problems {
         let emoji = if x.passed {
             print!("{}", color::Fg(color::Green));
-            "👍🏻"
+            "👍"
         } else {
             print!("{}", color::Fg(color::Red));
-            "😡"
+            "💔"
         };
         println!(
-            "{}\t {}[{}] \t{}",
+            "{}\t [{}] \t{}",
             emoji,
-            color::Fg(color::Red),
             x.num,
             x.name
         );
@@ -144,9 +147,9 @@ fn ensure_dir(path: &PathBuf) -> GenResult<()> {
 
 fn ensure_open(path: &PathBuf) -> GenResult<fs::File> {
     let result = fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(path)?;
+        .write(true)
+        .create_new(true)
+        .open(path)?;
     Ok(result)
 }
 
