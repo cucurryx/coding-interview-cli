@@ -22,6 +22,7 @@ lazy_static! {
         map.insert("cSharpTpl", "cs");
         map.insert("jsTpl", "js");
         map.insert("phpTpl", "php");
+        map.insert("jsV8Tpl", "jsv8");
         map
     };
 }

@@ -25,6 +25,8 @@ cargo run
 ## commands
 
 ### login or not login
+**Login mode is to be implemented**
+
 There are two mode: login or not login. If you login, the submit history will be based on the remote history of you acount. And if not, it's based on your local log.
 
 The default mode is not login.
@@ -36,6 +38,23 @@ cinterview login
 # then input username
 # and input password
 ```
+
+### init
+Download problem details from network. And coding templates will be generated in the current directory.
+```
+cinterview init
+```
+
+For example:
+![./pics/1550304472530.jpg](./pics/1550304472530.jpg)
+
+
+### clean
+Clean local problems data.
+```
+cinterview clean
+```
+
 ### list
 get current problems status
 ```
