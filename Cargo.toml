@@ -1,5 +1,5 @@
 [package]
-name = "coding-interviews"
+name = "coding-interview-cli"
 version = "0.1.0"
 authors = ["mutexlock <xiebei1108@outlook.com>"]
 edition = "2018"

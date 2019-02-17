@@ -1,7 +1,12 @@
-// use std::env::home_dir;
+extern crate dirs;
+use dirs::home_dir;
 
-// /// Where the local data is. For example, your problem's status if not login.
-// pub const DATA_DIR_FORMATTER: &str = "{}/.coding-interview";
+use std::path::PathBuf;
 
-// /// Problem information if not login.
-// pub const PROBLEM_PATH_FORMATTER: &str = "{}/.coding-interview/problem.json";
+lazy_static! {
+    /// Static local data root pathbuf, equals to "$HOME/.coding-interview/"
+    pub static ref LOCAL_ROOT: PathBuf = home_dir().unwrap().join(".coding-interview");
+
+    /// Static local problem data path, equals to "$HOME/.coding-interview/problem.json"
+    pub static ref PROBLEM_PATH: PathBuf = LOCAL_ROOT.join("problem.json");
+}

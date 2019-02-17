@@ -1,5 +1,5 @@
-extern crate select;
 extern crate regex;
+extern crate select;
 
 use std;
 use std::collections::HashMap;
@@ -18,7 +18,7 @@ const PROBLEM_PAGE_CNT: u32 = 4;
 
 /// Static hash map that contains the suffix of each programming languages
 lazy_static! {
-    static ref PRIVILEGES: HashMap<&'static str, &'static str> = {
+    static ref LANG_SUFFIX: HashMap<&'static str, &'static str> = {
         let mut map = HashMap::new();
         map.insert("javaTpl", "java");
         map.insert("cTpl", "cc");
@@ -115,5 +115,5 @@ pub fn get_problems() -> ProblemList {
 }
 
 fn to_suffix(key: &str) -> String {
-    PRIVILEGES.get(key).unwrap_or(&"unknown").to_string()
+    LANG_SUFFIX.get(key).unwrap_or(&"unknown").to_string()
 }

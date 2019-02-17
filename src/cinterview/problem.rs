@@ -15,6 +15,7 @@ use dirs::home_dir;
 extern crate termion;
 use termion::color;
 
+use crate::cinterview::config::{LOCAL_ROOT, PROBLEM_PATH};
 use crate::cinterview::crawler::*;
 use crate::cinterview::error::*;
 
@@ -59,10 +60,8 @@ impl Problem {
 // pub fn list_problems_login() {}
 
 pub fn list_problems_unlogin() {
-    let local_root = home_dir().unwrap().join(".coding-interview");
-    let problem_path = local_root.join("problem.json");
-    ensure_local_data(&local_root, &problem_path);
-    print_problem_infos(read_local_problems(&problem_path).expect("read local problem fail"));
+    ensure_local_data(&LOCAL_ROOT, &PROBLEM_PATH);
+    print_problem_infos(read_local_problems(&PROBLEM_PATH).expect("read local problem fail"));
 }
 
 pub fn clean_problems() {
@@ -83,29 +82,26 @@ pub fn clean_problems() {
 }
 
 pub fn init_problems() {
-    let local_root = home_dir().unwrap().join(".coding-interview");
-    ensure_local_data(&local_root, &local_root.join("problem.json"));
+    ensure_local_data(&LOCAL_ROOT, &PROBLEM_PATH);
     init_projects().expect("init projects fail");
     println!("\n 😘😘😘\tinit ok...");
 }
 
 fn init_projects() -> GenResult<()> {
-    let local_root = home_dir().unwrap().join(".coding-interview/problem.json");
     let root = current_dir()?.join("coding-inverview/");
-
     if root.exists() {
         println!("coding directory already exist!");
         return Ok(());
     }
 
-    for x in read_local_problems(&local_root)? {
+    for x in read_local_problems(&PROBLEM_PATH)? {
         let dir_name = format!("{}_{}", x.num, x.name);
         x.save(&root.join(dir_name))?;
     }
     Ok(())
 }
 
-fn read_local_problems(path: &PathBuf) -> io::Result<ProblemList> {
+pub fn read_local_problems(path: &PathBuf) -> io::Result<ProblemList> {
     match fs::read_to_string(path) {
         Ok(data) => {
             let problems: ProblemList = serde_json::from_str(data.as_str())?;
@@ -143,7 +139,7 @@ fn ensure_dir(path: &PathBuf) -> GenResult<()> {
     Ok(())
 }
 
-fn ensure_open(path: &PathBuf) -> GenResult<fs::File> {
+pub fn ensure_open(path: &PathBuf) -> GenResult<fs::File> {
     let result = fs::OpenOptions::new()
         .write(true)
         .create_new(true)
@@ -153,8 +149,7 @@ fn ensure_open(path: &PathBuf) -> GenResult<fs::File> {
 
 fn update_problems(problems: ProblemList) -> GenResult<()> {
     let json_str = serde_json::to_string(&problems)?;
-    let problem_path = home_dir().unwrap().join(".coding-interview/problem.json");
-    let mut file = ensure_open(&problem_path)?;
+    let mut file = ensure_open(&PROBLEM_PATH)?;
     file.write_all(json_str.as_bytes())?;
     Ok(())
 }

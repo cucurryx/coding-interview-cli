@@ -152,7 +152,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "coding-interviews"
+name = "coding-interview-cli"
 version = "0.1.0"
 dependencies = [
  "dirs 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",

@@ -32,6 +32,6 @@ fn main() {
 
     // submit a solution
     if options.cmd_submit {
-        submit();
+        submit(options.flag_test, options.flag_exam, options.arg_num);
     }
 }
