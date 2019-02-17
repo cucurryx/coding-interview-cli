@@ -25,6 +25,9 @@ pub struct Problem {
     /// The number of problem. Start from 0 to 65 for now.
     pub num: u32,
 
+    /// Question ID in nowcoder
+    pub question_id: String,
+
     /// The name of problem
     pub name: String,
 
@@ -44,9 +47,9 @@ impl Problem {
     fn save(&self, path: &PathBuf) -> GenResult<()> {
         ensure_dir(path)?;
         for (lang, code) in &self.templates {
-           let filename = format!("{}_{}.{}", self.num, self.name, lang);
-           let mut file = ensure_open(&path.join(filename))?;
-           file.write_all(code.as_bytes())?;
+            let filename = format!("{}_{}.{}", self.num, self.name, lang);
+            let mut file = ensure_open(&path.join(filename))?;
+            file.write_all(code.as_bytes())?;
         }
         Ok(())
     }
@@ -91,7 +94,7 @@ fn init_projects() -> GenResult<()> {
     let root = current_dir()?.join("coding-inverview/");
 
     if root.exists() {
-        println!("already exist!");
+        println!("coding directory already exist!");
         return Ok(());
     }
 
@@ -128,12 +131,7 @@ fn print_problem_infos(problems: ProblemList) {
             print!("{}", color::Fg(color::Red));
             "💔"
         };
-        println!(
-            "{}\t [{}] \t{}",
-            emoji,
-            x.num,
-            x.name
-        );
+        println!("{}\t [{}] \t{}", emoji, x.num, x.name);
     }
     println!("{}[passed] [num] [problem-title]", color::Fg(color::Reset));
 }

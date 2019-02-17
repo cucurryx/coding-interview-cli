@@ -16,3 +16,4 @@ scraper = "0.9.1"                  # HTML parsing and querying with CSS selector
 select = "0.4.2"   
 termion = "1.5.1"
 lazy_static = "1.2.0"            # A macro for declaring lazily evaluated statics in Rust.
+regex = "1.1.0"             # An implementation of regular expressions for Rust. This implementation uses finite automata and gua…

@@ -11,6 +11,7 @@ mod cinterview;
 
 use crate::cinterview::app::*;
 use crate::cinterview::problem::*;
+use crate::cinterview::submit::*;
 
 fn main() {
     let options = parse_args();
@@ -30,5 +31,7 @@ fn main() {
     }
 
     // submit a solution
-    if options.cmd_submit {}
+    if options.cmd_submit {
+        submit();
+    }
 }
