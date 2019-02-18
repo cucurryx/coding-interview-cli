@@ -71,7 +71,7 @@ pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
 
     let m = read_local_code(&nums, "cc".to_string())
         .expect("read local data fail. you should under the `coding-interview` directory");
-    let problems = read_local_problems(&PROBLEM_PATH).expect("read local problems fail");
+    let mut problems = read_local_problems(&PROBLEM_PATH).expect("read local problems fail");
     let submission_ids = nums
         .iter()
         .map(|n| {
@@ -81,19 +81,31 @@ pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
         })
         .collect::<Vec<u32>>();
 
-    let ten_millis = time::Duration::from_millis(500);
+    let half_second = time::Duration::from_millis(500);
     for (n, x) in submission_ids.iter().enumerate() {
         loop {
-            thread::sleep(ten_millis);
+            thread::sleep(half_second);
             let resp = query_submission_status(*x).expect("query submission status fail");
-            if resp.status != 0 {
-                let problem = &problems[n as usize];
-                println!("{}---------------------[{}_{}]---------------------", color::Fg(color::White), problem.num, problem.name);
-                println!("{}\n", resp);
-                break;
-            }
+            match resp.status {
+                0 => continue,
+                5 => {
+                    problems[n as usize].passed = true;
+                }
+                _ => {}
+            };
+            let problem = &problems[n as usize];
+            println!(
+                "{}---------------------[{}_{}]---------------------",
+                color::Fg(color::White),
+                problem.num,
+                problem.name
+            );
+            println!("{}\n", resp);
+            break;
         }
     }
+
+    update_problems(problems).expect("update problem fail");
 }
 
 fn read_local_code(nums: &Vec<u32>, suffix: String) -> GenResult<HashMap<u32, String>> {

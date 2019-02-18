@@ -44,6 +44,7 @@ pub struct Problem {
     pub passed: bool,
 }
 
+
 impl Problem {
     fn save(&self, path: &PathBuf) -> GenResult<()> {
         ensure_dir(path)?;
@@ -141,13 +142,14 @@ fn ensure_dir(path: &PathBuf) -> GenResult<()> {
 
 pub fn ensure_open(path: &PathBuf) -> GenResult<fs::File> {
     let result = fs::OpenOptions::new()
+        .read(true)
         .write(true)
-        .create_new(true)
+        .create(true)
         .open(path)?;
     Ok(result)
 }
 
-fn update_problems(problems: ProblemList) -> GenResult<()> {
+pub fn update_problems(problems: ProblemList) -> GenResult<()> {
     let json_str = serde_json::to_string(&problems)?;
     let mut file = ensure_open(&PROBLEM_PATH)?;
     file.write_all(json_str.as_bytes())?;

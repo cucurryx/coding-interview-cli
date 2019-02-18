@@ -16,6 +16,7 @@ use crate::cinterview::submit::*;
 fn main() {
     let options = parse_args();
 
+    // clean local data of problems
     if options.cmd_clean {
         clean_problems();
     }
