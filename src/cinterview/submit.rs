@@ -11,7 +11,7 @@ use std::{thread, time};
 
 use termion::color;
 
-use console::{style};
+use console::style;
 
 use crate::cinterview::config::*;
 use crate::cinterview::error::*;
@@ -57,14 +57,30 @@ impl fmt::Display for SubmissionStatusResp {
                 write!(
                     f,
                     "[FAIL]\n\tresult:\t{}\n\tdetail:\n⬇⬇⬇⬇⬇ \n{}\n⬆⬆⬆⬆⬆\n",
-                    self.desc, clean_html(&self.memo)
+                    self.desc,
+                    clean_html(&self.memo)
                 )
             }
         }
     }
 }
 
-pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
+lazy_static! {
+    /// Static local data root pathbuf, equals to "$HOME/.coding-interview/"
+    pub static ref LANG_NUM: HashMap<&'static str, u32> = {
+        let mut map = HashMap::new();
+        map.insert("cc", 2);
+        map.insert("java", 4);
+        map.insert("py", 5);
+        map.insert("php", 8);
+        map.insert("cs", 9);
+        map.insert("js", 13);
+        map.insert("jsv8", 14);
+        map
+    };
+}
+
+pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
     let debug_info = !exam;
 
     if !debug_info {
@@ -72,7 +88,7 @@ pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
         return;
     }
 
-    let m = read_local_code(&nums, "cc".to_string())
+    let m = read_local_code(&nums, &lang)
         .expect("read local data fail. you should under the `coding-interview` directory");
     let mut problems = read_local_problems(&PROBLEM_PATH).expect("read local problems fail");
     let submission_ids = nums
@@ -88,7 +104,12 @@ pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
                 problem.num,
                 problem.name
             );
-            submit_code(&problem.question_id, &code, 2).expect("submit code fail")
+            submit_code(
+                &problem.question_id,
+                &code,
+                *LANG_NUM.get(&lang.as_str()).expect("invalid lang"),
+            )
+            .expect("submit code fail")
         })
         .collect::<Vec<u32>>();
 
@@ -123,7 +144,7 @@ pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
     update_problems(problems).expect("update problem fail");
 }
 
-fn read_local_code(nums: &Vec<u32>, suffix: String) -> GenResult<HashMap<u32, String>> {
+fn read_local_code(nums: &Vec<u32>, suffix: &String) -> GenResult<HashMap<u32, String>> {
     let code_root = code_root_dir()?;
     let to_submit = read_local_problems(&PROBLEM_PATH)?
         .into_iter()

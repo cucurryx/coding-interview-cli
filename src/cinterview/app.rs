@@ -5,7 +5,7 @@ const USAGE: &'static str = "
 Usage: cinterview init
        cinterview list
        cinterview clean
-       cinterview submit [--exam | --test] <num>...
+       cinterview submit [--exam | --test] <lang> <num>...
        
 Options:
     -h, --help         Show this message.
@@ -17,6 +17,7 @@ Options:
 #[derive(Debug, Deserialize)]
 pub struct CinterviewOptions {
     pub arg_num: Vec<u32>,
+    pub arg_lang: String,
     pub flag_exam: bool,
     pub flag_test: bool,
     pub flag_help: bool,

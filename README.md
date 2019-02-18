@@ -49,10 +49,13 @@ For example:
 ### submit 
 ```
 # -e means exams mode
-cinterview submit -e 12
+# the first arg after `submit` should be the suffix of the lanugage in which you're going to submit the code.
+# include: cc, py, java, php, js, cs ...
+
+cinterview submit -e cc 1 2 3
 
 # -t means test mode
-cinterview submit -t 12
+cinterview submit -t java 12
 ```
 
 The difference between these two mode is whether you can get the error message if your code is not correct. Default it test mode.
@@ -65,7 +68,7 @@ cinterview clean
 ```
 
 ## Todo
-- [ ] support all languages
+- [x] support all languages
 - [ ] more readable output
 - [ ] login
 - [ ] generate submit code from test code automatically
