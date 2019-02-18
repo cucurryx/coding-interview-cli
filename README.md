@@ -64,3 +64,10 @@ Clean local problems data.
 cinterview clean
 ```
 
+## Todo
+- [ ] support all languages
+- [ ] more readable output
+- [ ] login
+- [ ] generate submit code from test code automatically
+- [ ] vscode extension
+
