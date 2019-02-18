@@ -88,7 +88,7 @@ pub fn init_problems() {
 }
 
 fn init_projects() -> GenResult<()> {
-    let root = current_dir()?.join("coding-inverview/");
+    let root = current_dir()?.join("coding-interview/");
     if root.exists() {
         println!("coding directory already exist!");
         return Ok(());
