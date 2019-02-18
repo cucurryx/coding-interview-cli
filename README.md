@@ -6,20 +6,15 @@ Virsual Studio Code extension like [this](https://github.com/jdneo/vscode-leetco
 
 ## install
 
-clone this repo:
+clone this repo, install rust and cargo, then build or run.
 ```
-git clone ...
-```
-
-install cargo for rust:
-```
-# for linux or macOS
+# install cargo and rust for linux or macOS
 curl -sSf https://static.rust-lang.org/rustup.sh | sh
-```
 
-run:
-```
-cargo run
+git clone https://github.com/xiebei1108/coding-interview-cli
+cd coding-interview-cli
+cargo build --release
+sudo cp ./target/release/cinterview /usr/local/bin
 ```
 
 ## commands
@@ -39,30 +34,19 @@ cinterview login
 # and input password
 ```
 
-### init
-Download problem details from network. And coding templates will be generated in the current directory.
+### init && list
 ```
+# download problem details from network. And coding templates will be generated in the current directory.
 cinterview init
+
+# get current problems status
+cinterview list
 ```
 
 For example:
 ![./pics/1550304472530.jpg](./pics/1550304472530.jpg)
 
-
-### clean
-Clean local problems data.
-```
-cinterview clean
-```
-
-### list
-get current problems status
-```
-cinterview list
-```
-
-### submit
-
+### submit 
 ```
 # -e means exams mode
 cinterview submit -e 12
@@ -72,4 +56,11 @@ cinterview submit -t 12
 ```
 
 The difference between these two mode is whether you can get the error message if your code is not correct. Default it test mode.
+
+
+### clean
+Clean local problems data.
+```
+cinterview clean
+```
 

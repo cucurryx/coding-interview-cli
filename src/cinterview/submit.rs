@@ -1,19 +1,22 @@
+extern crate console;
+
 use std::collections::HashMap;
 use std::env::current_dir;
 
-use std::fs::read_to_string;
-
 use std::fmt;
 
+use std::fs::read_to_string;
 use std::path::PathBuf;
+use std::{thread, time};
 
 use termion::color;
 
-use std::{thread, time};
+use console::{style};
 
 use crate::cinterview::config::*;
 use crate::cinterview::error::*;
 use crate::cinterview::problem::*;
+use crate::cinterview::utils::*;
 
 #[derive(Debug, Deserialize)]
 #[allow(non_snake_case)]
@@ -54,7 +57,7 @@ impl fmt::Display for SubmissionStatusResp {
                 write!(
                     f,
                     "[FAIL]\n\tresult:\t{}\n\tdetail:\n⬇⬇⬇⬇⬇ \n{}\n⬆⬆⬆⬆⬆\n",
-                    self.desc, self.memo
+                    self.desc, clean_html(&self.memo)
                 )
             }
         }
@@ -74,15 +77,27 @@ pub fn submit(_test: bool, exam: bool, nums: Vec<u32>) {
     let mut problems = read_local_problems(&PROBLEM_PATH).expect("read local problems fail");
     let submission_ids = nums
         .iter()
-        .map(|n| {
-            let question_id = &problems[*n as usize].question_id;
-            let code = m.get(n).unwrap();
-            submit_code(question_id, &code, 2).expect("submit code fail")
+        .enumerate()
+        .map(|(n, x)| {
+            let problem = &problems[*x as usize];
+            let code = m.get(x).unwrap();
+            let style_str = format!("[{}/{}]", n, nums.len());
+            println!(
+                "{}\t{} {} submitting...",
+                style(&style_str).bold().dim(),
+                problem.num,
+                problem.name
+            );
+            submit_code(&problem.question_id, &code, 2).expect("submit code fail")
         })
         .collect::<Vec<u32>>();
 
     let half_second = time::Duration::from_millis(500);
     for (n, x) in submission_ids.iter().enumerate() {
+        let spinner = get_progress_spinner(100 as u64, &"waiting for result...");
+        let _ = thread::spawn(move || {
+            spinner.tick();
+        });
         loop {
             thread::sleep(half_second);
             let resp = query_submission_status(*x).expect("query submission status fail");
@@ -159,4 +174,8 @@ fn query_submission_status(submission_id: u32) -> GenResult<SubmissionStatusResp
     );
     let resp: SubmissionStatusResp = reqwest::get(&url)?.json()?;
     Ok(resp)
+}
+
+fn clean_html(desc: &String) -> String {
+    desc.split("<br/>").collect::<Vec<&str>>().join("")
 }

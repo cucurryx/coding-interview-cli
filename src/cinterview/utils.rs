@@ -10,3 +10,14 @@ pub fn get_progress_bar(size: u64, msg: &str) -> ProgressBar {
     bar.set_message(msg);
     bar
 }
+
+/// Return a pre-configured progress bar
+pub fn get_progress_spinner(size: u64, msg: &str) -> ProgressBar {
+    let spinner_style = ProgressStyle::default_spinner()
+        .tick_chars("⠁⠂⠄⡀⢀⠠⠐⠈ ")
+        .template("{prefix:.bold.dim} {spinner} {wide_msg}");
+    let bar = ProgressBar::new(size);
+    bar.set_style(spinner_style);
+    bar.set_message(msg);
+    bar
+}

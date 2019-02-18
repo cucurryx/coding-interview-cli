@@ -44,14 +44,16 @@ pub struct Problem {
     pub passed: bool,
 }
 
-
 impl Problem {
     fn save(&self, path: &PathBuf) -> GenResult<()> {
         ensure_dir(path)?;
         for (lang, code) in &self.templates {
             let filename = format!("{}_{}.{}", self.num, self.name, lang);
+            let test_filename = format!("test.{}", lang);
             let mut file = ensure_open(&path.join(filename))?;
+            let mut testfile = ensure_open(&path.join(test_filename))?;
             file.write_all(code.as_bytes())?;
+            testfile.write_all(code.as_bytes())?;
         }
         Ok(())
     }
