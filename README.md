@@ -49,8 +49,9 @@ For example:
 ### submit 
 ```
 # -e means exams mode
-# the first arg after `submit` should be the suffix of the lanugage in which you're going to submit the code.
-# include: cc, py, java, php, js, cs ...
+# the first arg after `submit` should be the suffix of the lanugage in which 
+# you're going to submit the code.
+# includes: cc, py, java, php, js, cs ...
 
 cinterview submit -e cc 1 2 3
 

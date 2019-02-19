@@ -4,14 +4,12 @@ use std::collections::HashMap;
 use std::env::current_dir;
 
 use std::fmt;
-
 use std::fs::read_to_string;
 use std::path::PathBuf;
 use std::{thread, time};
-
 use termion::color;
 
-use console::style;
+use rayon::prelude::*;
 
 use crate::cinterview::config::*;
 use crate::cinterview::error::*;
@@ -91,19 +89,15 @@ pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
     let m = read_local_code(&nums, &lang)
         .expect("read local data fail. you should under the `coding-interview` directory");
     let mut problems = read_local_problems(&PROBLEM_PATH).expect("read local problems fail");
+
+    let progress_bar = get_progress_bar(nums.len() as u64, "submitting...");
     let submission_ids = nums
-        .iter()
-        .enumerate()
-        .map(|(n, x)| {
+        .par_iter()
+        .map(|x| {
             let problem = &problems[*x as usize];
-            let code = m.get(x).unwrap();
-            let style_str = format!("[{}/{}]", n, nums.len());
-            println!(
-                "{}\t{} {} submitting...",
-                style(&style_str).bold().dim(),
-                problem.num,
-                problem.name
-            );
+            let code = m.get(&x).unwrap();
+            progress_bar.set_message(&format!("{} {} ok!", problem.num, problem.name));
+            progress_bar.inc(1);
             submit_code(
                 &problem.question_id,
                 &code,
@@ -112,7 +106,9 @@ pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
             .expect("submit code fail")
         })
         .collect::<Vec<u32>>();
+    progress_bar.finish_with_message("submit done!");
 
+    // TODO, use threads to speed up?
     let half_second = time::Duration::from_millis(500);
     for (n, x) in submission_ids.iter().enumerate() {
         let spinner = get_progress_spinner(100 as u64, &"waiting for result...");
@@ -124,24 +120,27 @@ pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
             let resp = query_submission_status(*x).expect("query submission status fail");
             match resp.status {
                 0 => continue,
-                5 => {
-                    problems[n as usize].passed = true;
-                }
+                5 => problems[n as usize].passed = true,
+
                 _ => {}
             };
-            let problem = &problems[n as usize];
-            println!(
-                "{}---------------------[{}_{}]---------------------",
-                color::Fg(color::White),
-                problem.num,
-                problem.name
-            );
-            println!("{}\n", resp);
+            let problem = &problems[nums[n as usize] as usize];
+            print_submit_resp(problem.num, &problem.name, &resp);
             break;
         }
     }
 
     update_problems(problems).expect("update problem fail");
+}
+
+fn print_submit_resp(num: u32, name: &str, resp: &SubmissionStatusResp) {
+    println!(
+        "{}---------------[{}_{}]---------------\n{}\n",
+        color::Fg(color::White),
+        num,
+        name,
+        resp
+    );
 }
 
 fn read_local_code(nums: &Vec<u32>, suffix: &String) -> GenResult<HashMap<u32, String>> {

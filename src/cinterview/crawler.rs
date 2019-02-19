@@ -1,6 +1,7 @@
 extern crate regex;
 extern crate select;
 
+use rayon::prelude::*;
 use std;
 use std::collections::HashMap;
 use std::str;
@@ -54,64 +55,69 @@ fn get_problem_urls() -> GenResult<Vec<String>> {
     Ok(urls)
 }
 
+fn get_problem(i: u32, url: &String) -> GenResult<Problem> {
+    let query_url = format!("https://www.nowcoder.com/{}", url);
+    let mut resp = reqwest::get(query_url.as_str()).expect("reqwest::get() fail 😔");
+    let body = resp.text().expect("get resp body fail");
+    let document = Document::from(body.as_str());
+
+    let titles = document
+        .find(And(Name("div"), Class("terminal-topic-title")))
+        .map(|x| x.text().trim().to_string())
+        .collect::<Vec<String>>();
+
+    let contents = document
+        .find(And(Name("div"), Class("subject-describe")))
+        .map(|x| x.text().trim().to_string())
+        .collect::<Vec<String>>();
+
+    let templates = document
+        .find(Name("textarea"))
+        .map(|x| {
+            (
+                to_suffix(x.attr("id").expect("get id fail")),
+                x.text().to_string(),
+            )
+        })
+        .into_iter()
+        .collect::<HashMap<String, String>>();
+
+    let re = Regex::new("[0-9]+").expect("regex compile error");
+    let line = body
+        .as_str()
+        .split("\n")
+        .map(|x| x.to_string())
+        .find(|x| x.starts_with("questionId"))
+        .expect("get question id fail");
+    let match_res = re.find(line.as_str()).expect("get question id fail");
+    let question_id = line[match_res.start()..match_res.end()].to_string();
+
+    Ok(Problem {
+        num: i as u32,
+        question_id: question_id,
+        name: titles.first().expect("get title fail").clone(),
+        content: contents.first().expect("get contents fail").clone(),
+        passed: false,
+        templates: templates,
+    })
+}
+
 pub fn get_problems() -> ProblemList {
     let urls = get_problem_urls().expect("get_problem_urls fail! 😔😔😔");
-    let mut result = ProblemList::new();
     let progress_bar = get_progress_bar(
         urls.len() as u64,
         "No local data. Fetching from internet...",
     );
-
-    for (i, url) in urls.iter().enumerate() {
-        let query_url = format!("https://www.nowcoder.com/{}", url);
-        let mut resp = reqwest::get(query_url.as_str()).expect("reqwest::get() fail 😔");
-        let body = resp.text().expect("get resp body fail");
-        let document = Document::from(body.as_str());
-
-        let titles = document
-            .find(And(Name("div"), Class("terminal-topic-title")))
-            .map(|x| x.text().trim().to_string())
-            .collect::<Vec<String>>();
-
-        let contents = document
-            .find(And(Name("div"), Class("subject-describe")))
-            .map(|x| x.text().trim().to_string())
-            .collect::<Vec<String>>();
-
-        let templates = document
-            .find(Name("textarea"))
-            .map(|x| {
-                (
-                    to_suffix(x.attr("id").expect("get id fail")),
-                    x.text().to_string(),
-                )
-            })
-            .into_iter()
-            .collect::<HashMap<String, String>>();
-
-        let re = Regex::new("[0-9]+").expect("regex compile error");
-        let line = body
-            .as_str()
-            .split("\n")
-            .map(|x| x.to_string())
-            .find(|x| x.starts_with("questionId"))
-            .expect("get question id fail");
-        let match_res = re.find(line.as_str()).expect("get question id fail");
-        let question_id = line[match_res.start()..match_res.end()].to_string();
-
-        result.push(Problem {
-            num: i as u32,
-            question_id: question_id,
-            name: titles.first().expect("get title fail").clone(),
-            content: contents.first().expect("get contents fail").clone(),
-            passed: false,
-            templates: templates,
-        });
-
-        progress_bar.set_position(i as u64);
-    }
+    let problems = urls
+        .par_iter()
+        .enumerate()
+        .filter_map(|(i, url)| {
+            progress_bar.inc(1);
+            get_problem(i as u32, &url).ok()
+        })
+        .collect::<ProblemList>();
     progress_bar.finish_with_message("download finish!");
-    result
+    problems
 }
 
 fn to_suffix(key: &str) -> String {

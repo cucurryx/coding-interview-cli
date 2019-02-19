@@ -18,3 +18,4 @@ termion = "1.5.1"
 lazy_static = "1.2.0"            # A macro for declaring lazily evaluated statics in Rust.
 regex = "1.1.0"         
 console = "0.7.5"                        # A terminal and console abstraction for Rust
+rayon = "1.0.3"               # Simple work-stealing parallelism for Rust
