@@ -14,9 +14,15 @@ mod cinterview;
 use crate::cinterview::app::*;
 use crate::cinterview::problem::*;
 use crate::cinterview::submit::*;
+use crate::cinterview::login::*;
 
 fn main() {
     let options = parse_args();
+
+    // login
+    if options.cmd_login {
+        login();
+    }
 
     // clean local data of problems
     if options.cmd_clean {

@@ -121,7 +121,6 @@ pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
             match resp.status {
                 0 => continue,
                 5 => problems[n as usize].passed = true,
-
                 _ => {}
             };
             let problem = &problems[nums[n as usize] as usize];

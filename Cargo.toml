@@ -19,3 +19,5 @@ lazy_static = "1.2.0"            # A macro for declaring lazily evaluated static
 regex = "1.1.0"         
 console = "0.7.5"                        # A terminal and console abstraction for Rust
 rayon = "1.0.3"               # Simple work-stealing parallelism for Rust
+fantoccini = "0.11.6"          # High-level API for programmatically interacting with web pages through WebDriver.
+futures = "0.1.25"                # An implementation of futures and streams featuring zero allocations, composability, and itera…

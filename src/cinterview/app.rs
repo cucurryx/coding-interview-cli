@@ -5,6 +5,7 @@ const USAGE: &'static str = "
 Usage: cinterview init
        cinterview list
        cinterview clean
+       cinterview login
        cinterview submit [--exam | --test] <lang> <num>...
        
 Options:
@@ -26,6 +27,7 @@ pub struct CinterviewOptions {
     pub cmd_submit: bool,
     pub cmd_init: bool,
     pub cmd_clean: bool,
+    pub cmd_login: bool,
 }
 
 pub fn parse_args() -> CinterviewOptions {
