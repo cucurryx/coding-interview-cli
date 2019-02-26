@@ -154,6 +154,7 @@ pub fn ensure_open(path: &PathBuf) -> GenResult<fs::File> {
 pub fn update_problems(problems: ProblemList) -> GenResult<()> {
     let json_str = serde_json::to_string(&problems)?;
     let mut file = ensure_open(&PROBLEM_PATH)?;
+    file.set_len(0 as u64)?;
     file.write_all(json_str.as_bytes())?;
     Ok(())
 }
