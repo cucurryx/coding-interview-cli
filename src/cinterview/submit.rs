@@ -120,7 +120,7 @@ pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
             let resp = query_submission_status(*x).expect("query submission status fail");
             match resp.status {
                 0 => continue,
-                5 => problems[n as usize].passed = true,
+                5 => problems[nums[n as usize] as usize].passed = true,
                 _ => {}
             };
             let problem = &problems[nums[n as usize] as usize];
@@ -128,7 +128,6 @@ pub fn submit(_test: bool, exam: bool, lang: String, nums: Vec<u32>) {
             break;
         }
     }
-
     update_problems(problems).expect("update problem fail");
 }
 
